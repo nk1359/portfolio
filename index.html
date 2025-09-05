@@ -65,6 +65,79 @@
             transform: translateY(-2px);
         }
 
+        /* Hamburger Menu Styles */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #ffffff;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Mobile Navigation Overlay */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-overlay.active {
+            opacity: 1;
+        }
+
+        .nav-overlay .nav-links {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            flex-direction: column;
+            gap: 40px;
+            text-align: center;
+            display: flex !important;
+        }
+
+        .nav-overlay .nav-links a {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-overlay .nav-links a:hover {
+            color: #e50914;
+            transform: scale(1.1);
+        }
+
         .hero-section {
             position: relative;
             height: 100vh; /* full screen */
@@ -363,8 +436,18 @@
         @media (max-width: 768px) {
             .navbar {
                 padding: 15px 20px;
-                flex-direction: column;
-                gap: 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-overlay {
+                display: block;
             }
             
             .hero-title {
@@ -397,7 +480,22 @@
             <li><a href="#skills">Skills</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </nav>
+
+    <div class="nav-overlay" id="navOverlay">
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
     
     <section class="hero-section" id="home">
         <div class="hero-content">
@@ -593,6 +691,42 @@
             } else {
                 navbar.classList.remove('scrolled');
             }
+        });
+
+        // Hamburger menu functionality
+        const hamburger = document.getElementById('hamburger');
+        const navOverlay = document.getElementById('navOverlay');
+
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            
+            if (navOverlay.classList.contains('active')) {
+                navOverlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => {
+                    navOverlay.style.opacity = '1';
+                }, 10);
+            } else {
+                navOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    navOverlay.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            }
+        });
+
+        // Close mobile menu when clicking on links
+        document.querySelectorAll('.nav-overlay .nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                navOverlay.classList.remove('active');
+                navOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    navOverlay.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            });
         });
 
         // Modal functions
